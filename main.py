@@ -1,6 +1,7 @@
-from flask import Flask
+import flask
 
-app = Flask(__name__)
+
+app = flask.Flask(__name__)
 
 
 @app.route('/')
@@ -20,6 +21,13 @@ def promotion():
                          'Мы сделаем обитаемыми безжизненные пока планеты.',
                          'И начнем с Марса!',
                          'Присоединяйся!'])
+
+
+@app.route('/image_mars')
+def hello_mars():
+    return f'''<h1>Жди нас, Марс!</h1>
+               <img src="{flask.url_for('static', filename='img/mars.png')}">
+               <p>Вот она какая, красная планета</p>'''
 
 
 if __name__ == '__main__':
