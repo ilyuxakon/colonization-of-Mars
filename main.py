@@ -2,7 +2,7 @@ import flask
 
 
 app = flask.Flask(__name__)
-
+request = flask.request
 
 @app.route('/')
 def title():
@@ -66,5 +66,98 @@ def promotion_image():
                 </html>'''
 
 
+@app.route('/astronaut_selection', methods=['POST', 'GET'])
+def form_sample():
+    if request.method == 'GET':
+        return f'''<!doctype html>
+                        <html lang="en">
+                          <head>
+                            <meta charset="utf-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                            <link rel="stylesheet"
+                            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                            integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                            crossorigin="anonymous">
+                            <link rel="stylesheet" type="text/css" href="{flask.url_for('static', filename='css/style.css')}" />
+                            <title>Пример формы</title>
+                          </head>
+                          <body>
+                            <center><h1>Анкета претендента</h1></center>
+                            <center><h2>на участие в миссии</h2></center>
+                            <div>
+                                <form class="login_form" method="post" enctype="multipart/form-data">
+                                    <input type="surname" class="form-control" id="surname" placeholder="Введите фамилию" name="surname">
+                                    <input type="name" class="form-control" id="name" placeholder="Введите имя" name="name">
+                                    <label></label>
+                                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Введите адрес почты" name="email">
+                                    <br>
+                                    <div class="education-group">
+                                        <label for="education">Какое у вас образование</label>
+                                        <br>
+                                        <select class="education-control" id="education" name="education">
+                                          <option>Начальное</option>
+                                          <option>Основное общее</option>
+                                          <option>Среднее общее</option>
+                                          <option>Среднее профессиональное</option>
+                                          <option>Высшее</option>
+                                        </select>
+                                    </div>
+                                    <br>
+                                    <div class="profession-group">
+                                      <label for="profession">Какие у Вас есть профессии?</label>
+                                      <br>
+                                      <input type=checkbox class="profession-control" id="1", name="1">Инженер-исследователь<br></input>
+                                      <input type=checkbox class="profession-control" id="2", name="2">Инженер-строитель<br></input>
+                                      <input type=checkbox class="profession-control" id="3", name="3">Пилот<br></input>
+                                      <input type=checkbox class="profession-control" id="4", name="4">Метеоролог<br></input>
+                                      <input type=checkbox class="profession-control" id="5", name="5">Инженер по жизнеобеспечению<br></input>
+                                      <input type=checkbox class="profession-control" id="6", name="6">Инженер по радиационной защите<br></input>
+                                      <input type=checkbox class="profession-control" id="7", name="7">Врач<br></input>
+                                      <input type=checkbox class="profession-control" id="8", name="8">Экзобиолог<br></input>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label for="form-check">Укажите пол</label>
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="sex" id="male" value="male" checked>
+                                          <label class="form-check-label" for="male">
+                                            Мужской
+                                          </label>
+                                        </div>
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="sex" id="female" value="female">
+                                          <label class="form-check-label" for="female">
+                                            Женский
+                                          </label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label for="about">show me your motivation!</label>
+                                        <textarea class="form-control" id="about" rows="3" name="about"></textarea>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label for="photo">Приложите фотографию</label>
+                                        <input type="file" class="form-control-file" id="photo" name="file">
+                                    </div>
+                                    <br>
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" class="form-check-input" id="acceptRules" name="accept">
+                                        <label class="form-check-label" for="acceptRules">Готовы остаться на Марсе?</label>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Отправить</button>
+                                </form>
+                            </div>
+                          </body>
+                        </html>'''
+                        
+    elif request.method == 'POST':
+        f = request.files['file']
+        print(f.read())
+        return "Форма отправлена"
+    
+    
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
