@@ -1,5 +1,7 @@
 import flask
-
+from io import BytesIO
+from PIL import Image
+import os
 
 app = flask.Flask(__name__)
 request = flask.request
@@ -202,6 +204,48 @@ def result(nickname, level, rating):
                   <div class="alert alert-warning" role="alert">Желаем удачи</div>
                 </body>
               </html>'''
+
+
+@app.route('/load_photo', methods=['POST', 'GET'])
+def load_photo():
+    global image
+    if request.method == 'GET':
+        return f'''<!doctype html>
+                    <html lang="en">
+                      <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                        <link rel="stylesheet"
+                          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                          crossorigin="anonymous">
+                        <link rel="stylesheet" type="text/css" href="{flask.url_for('static', filename='css/style.css')}" />
+                        <title>Пример формы</title>
+                      </head>
+                      <body>
+                        <center><h1>Загрузка фотографии</h1></center>
+                        <center><h2>для участия в миссии</h2></center>
+                        <div>
+                          <form class="login_form" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                              <label for="photo">Приложите фотографию</label>
+                              <br>
+                              <br>
+                              <input type="file" class="form-control-file" id="photo" name="file">
+                            </div>
+                            <br>
+                            {"<img src=static/img/user_photo.png>" if os.path.exists('static/img/user_photo.png') else ''}
+                            <br>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                          </form>
+                        </div>
+                      </body>
+                    </html>'''
+                        
+    elif request.method == 'POST':
+        f = request.files['file']
+        f.save('static/img/user_photo.png')
+        return "Форма отправлена"
 
 
 if __name__ == '__main__':
