@@ -1,6 +1,4 @@
 import flask
-from io import BytesIO
-from PIL import Image
 import os
 
 app = flask.Flask(__name__)
@@ -246,6 +244,56 @@ def load_photo():
         f = request.files['file']
         f.save('static/img/user_photo.png')
         return "Форма отправлена"
+
+
+@app.route('/carousel')
+def carousel():
+    return f'''<!doctype html>
+                    <html lang="en">
+                      <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                        <link rel="stylesheet"
+                          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                          crossorigin="anonymous">
+                        <link rel="stylesheet" type="text/css" href="{flask.url_for('static', filename='css/style.css')}" />
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                          crossorigin="anonymous"></script>
+                        <title>Пример формы</title>
+                      </head>
+                      <body>
+                        <center><h1>Пейзажи Марса</h1></center>
+                        <div id="carouselExample" class="carousel slide">
+                          <div class="carousel-inner">
+                            <div class="carousel-item active">
+                              <center><img src="{flask.url_for('static', filename='img/1.png')}" class="d-block w-95"></center>
+                            </div>
+                            <div class="carousel-item">
+                              <center><img src="{flask.url_for('static', filename='img/2.png')}" class="d-block w-95"></center>
+                            </div>
+                            <div class="carousel-item">
+                              <center><img src="{flask.url_for('static', filename='img/3.png')}" class="d-block w-95"></center>
+                            </div>
+                            <div class="carousel-item">
+                              <center><img src="{flask.url_for('static', filename='img/4.png')}" class="d-block w-95"></center>
+                            </div>
+                            <div class="carousel-item">
+                              <center><img src="{flask.url_for('static', filename='img/5.png')}" class="d-block w-95"></center>
+                            </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
+                      </body>
+                    </html>'''
 
 
 if __name__ == '__main__':
