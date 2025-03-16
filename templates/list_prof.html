@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if list in ['ul', 'ol'] %}
+        <h2>Список профессий</h2>
+        <{{ list }}>
+            {% for item in list_professions %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </{{ list }}>
+
+    {% else %}
+        <div>Неверный параметр "list"</div>
+
+    {% endif %}
+{% endblock %}
