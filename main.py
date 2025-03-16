@@ -1,5 +1,7 @@
 from flask import request, Flask, url_for, render_template
 import os
+import json
+
 
 app = Flask(__name__)
 request = request
@@ -103,14 +105,14 @@ def form_sample():
                             <div class="profession-group">
                               <label for="profession">Какие у Вас есть профессии?</label>
                               <br>
-                              <input type=checkbox class="profession-control" id="1", name="1">Инженер-исследователь<br></input>
-                              <input type=checkbox class="profession-control" id="2", name="2">Инженер-строитель<br></input>
-                              <input type=checkbox class="profession-control" id="3", name="3">Пилот<br></input>
-                              <input type=checkbox class="profession-control" id="4", name="4">Метеоролог<br></input>
-                              <input type=checkbox class="profession-control" id="5", name="5">Инженер по жизнеобеспечению<br></input>
-                              <input type=checkbox class="profession-control" id="6", name="6">Инженер по радиационной защите<br></input>
-                              <input type=checkbox class="profession-control" id="7", name="7">Врач<br></input>
-                              <input type=checkbox class="profession-control" id="8", name="8">Экзобиолог<br></input>
+                              <input type=checkbox class="profession-control" id="1", name="Инженер-исследователь">Инженер-исследователь<br></input>
+                              <input type=checkbox class="profession-control" id="2", name="Инженер-строитель">Инженер-строитель<br></input>
+                              <input type=checkbox class="profession-control" id="3", name="Пилот">Пилот<br></input>
+                              <input type=checkbox class="profession-control" id="4", name="Метеоролог">Метеоролог<br></input>
+                              <input type=checkbox class="profession-control" id="5", name="Инженер по жизнеобеспечению">Инженер по жизнеобеспечению<br></input>
+                              <input type=checkbox class="profession-control" id="6", name="Инженер по радиационной защите">Инженер по радиационной защите<br></input>
+                              <input type=checkbox class="profession-control" id="7", name="Врач">Врач<br></input>
+                              <input type=checkbox class="profession-control" id="8", name="Экзобиолог">Экзобиолог<br></input>
                             </div>
                             <br>
                             <div class="form-group">
@@ -147,8 +149,23 @@ def form_sample():
                     </html>'''
                         
     elif request.method == 'POST':
-        f = request.files['file']
-        print(f.read())
+        dictionary = dict()
+        dictionary['surname'] = request.form.get('surname')
+        dictionary['name'] = request.form.get('name')
+        dictionary['education'] = request.form.get('education')
+        dictionary['sex'] = request.form.get('sex')
+        dictionary['motivation'] = request.form.get('about')
+        dictionary['ready'] = request.form.get('accept')
+
+        dictionary['profession'] = []
+        for prof in ['Инженер-исследователь', 'Инженер-строитель', 'Пилот', 'Метеоролог',
+                     'Инженер по жизнеобеспечению', 'Инженер по радиационной защите', 'Врач', 'Экзобиолог']:
+            if request.form.get(prof) == 'on':
+                dictionary['profession'].append(prof)
+
+        with open('json/person.json', 'w', encoding='utf-8') as file:
+            json.dump(dictionary, file)
+
         return "Форма отправлена"
     
   
@@ -314,6 +331,17 @@ def list_prof(list):
         "пилот дронов"
         ]
     return render_template('list_prof.html', list=list, list_professions=list_professions, title='list of professions')
+
+
+@app.route('/answer')
+@app.route('/auto_answer')
+def auto_answer():
+    with open('json/person.json', 'r', encoding='utf-8') as file:
+        dictionary = json.load(file)
+    dictionary['title'] = 'Анкета'
+
+    return render_template('auto_answer.html', **dictionary)
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
