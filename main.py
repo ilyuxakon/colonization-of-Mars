@@ -1,17 +1,14 @@
-import flask
+from flask import request, Flask, url_for, render_template
 import os
 
-app = flask.Flask(__name__)
-request = flask.request
-
-@app.route('/')
-def title():
-    return 'Колонизация Марса'
+app = Flask(__name__)
+request = request
 
 
-@app.route('/index')
-def slogan():
-    return 'И на Марсе будут яблони цвести!'
+@app.route('/<title>')
+@app.route('/index/<title>')
+def index(title):
+    return render_template('base.html', title=title)
 
 
 @app.route('/promotion')
@@ -26,7 +23,7 @@ def promotion():
 @app.route('/image_mars')
 def hello_mars():
     return f'''<h1>Жди нас, Марс!</h1>
-               <img src="{flask.url_for('static', filename='img/mars.png')}">
+               <img src="{url_for('static', filename='img/mars.png')}">
                <p>Вот она какая, красная планета</p>'''
 
 
@@ -41,12 +38,12 @@ def promotion_image():
                     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
                     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
                     crossorigin="anonymous">
-                    <link rel="stylesheet" href="{flask.url_for('static', filename='css/style.css')}">
+                    <link rel="stylesheet" href="{url_for('static', filename='css/style.css')}">
                     <title>Привет, Яндекс!</title>
                   </head>
                   <body>
                     <h1>Привет, Яндекс!</h1>
-                    <img src="{flask.url_for('static', filename='img/mars.png')}">
+                    <img src="{url_for('static', filename='img/mars.png')}">
                     <div class="alert alert-dark" role="alert">
                       Человечество вырастает из детства.
                     </div>
@@ -78,7 +75,7 @@ def form_sample():
                           href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
                           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
                           crossorigin="anonymous">
-                        <link rel="stylesheet" type="text/css" href="{flask.url_for('static', filename='css/style.css')}" />
+                        <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
                         <title>Пример формы</title>
                       </head>
                       <body>
@@ -166,7 +163,7 @@ def choice(planet_name):
                     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
                     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
                     crossorigin="anonymous">
-                    <link rel="stylesheet" href="{flask.url_for('static', filename='css/style.css')}">
+                    <link rel="stylesheet" href="{url_for('static', filename='css/style.css')}">
                     <title>Привет, Яндекс!</title>
                   </head>
                   <body>
@@ -191,7 +188,7 @@ def result(nickname, level, rating):
                   href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
                   integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
                   crossorigin="anonymous">
-                  <link rel="stylesheet" href="{flask.url_for('static', filename='css/style.css')}">
+                  <link rel="stylesheet" href="{url_for('static', filename='css/style.css')}">
                   <title>Привет, Яндекс!</title>
                 </head>
                 <body>
@@ -217,7 +214,7 @@ def load_photo():
                           href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
                           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
                           crossorigin="anonymous">
-                        <link rel="stylesheet" type="text/css" href="{flask.url_for('static', filename='css/style.css')}" />
+                        <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
                         <title>Пример формы</title>
                       </head>
                       <body>
@@ -257,7 +254,7 @@ def carousel():
                           href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
                           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
                           crossorigin="anonymous">
-                        <link rel="stylesheet" type="text/css" href="{flask.url_for('static', filename='css/style.css')}" />
+                        <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
                         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
                           integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
                           crossorigin="anonymous"></script>
@@ -268,19 +265,19 @@ def carousel():
                         <div id="carouselExample" class="carousel slide">
                           <div class="carousel-inner">
                             <div class="carousel-item active">
-                              <center><img src="{flask.url_for('static', filename='img/1.png')}" class="d-block w-95"></center>
+                              <center><img src="{url_for('static', filename='img/1.png')}" class="d-block w-95"></center>
                             </div>
                             <div class="carousel-item">
-                              <center><img src="{flask.url_for('static', filename='img/2.png')}" class="d-block w-95"></center>
+                              <center><img src="{url_for('static', filename='img/2.png')}" class="d-block w-95"></center>
                             </div>
                             <div class="carousel-item">
-                              <center><img src="{flask.url_for('static', filename='img/3.png')}" class="d-block w-95"></center>
+                              <center><img src="{url_for('static', filename='img/3.png')}" class="d-block w-95"></center>
                             </div>
                             <div class="carousel-item">
-                              <center><img src="{flask.url_for('static', filename='img/4.png')}" class="d-block w-95"></center>
+                              <center><img src="{url_for('static', filename='img/4.png')}" class="d-block w-95"></center>
                             </div>
                             <div class="carousel-item">
-                              <center><img src="{flask.url_for('static', filename='img/5.png')}" class="d-block w-95"></center>
+                              <center><img src="{url_for('static', filename='img/5.png')}" class="d-block w-95"></center>
                             </div>
                           </div>
                           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
