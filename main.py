@@ -368,7 +368,7 @@ def login():
         captain_id = form.captain_id.data
         captain_password = form.captain_password.data
 
-        with open('json/passwords.json', 'r', encoding='utf-8') as file:
+        with open('json/crew.json', 'r', encoding='utf-8') as file:
             json_file = json.load(file)
 
             if astronaut_password == json_file[astronaut_id]['password'] and\
@@ -382,6 +382,23 @@ def login():
 @app.route('/success')
 def succes():
     return '<h1>Hello world</h1>'
+
+
+@app.route('/distribution')
+def distribution():
+    with open('json/crew.json', 'r', encoding='utf-8') as file:
+        json_file = json.load(file)
+
+        crew = list()
+        for crewmember in json_file.values():
+            name = crewmember['name'] + ' ' + crewmember['surname']
+            crew.append(name)
+
+            if crewmember['role'] == 'captain':
+                crew.insert(0, name)
+                crew.pop()
+
+    return render_template('distribution.html', crew=crew)
 
 
 if __name__ == '__main__':

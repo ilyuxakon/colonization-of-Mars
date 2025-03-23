@@ -1,0 +1,16 @@
+<head>
+    <link rel="stylesheet" tydive="text/css" href="static/css/distribution.css" />
+    <link rel="stylesheet" tydive="text/css" href="static/css/auto_answer.css" />
+</head>
+
+{% extends "base.html" %}
+
+{% block content %}
+    <br>
+    <center><h1>Размещение по каютам</h1></center>
+    <div class="distribution_class">
+        {% for crewmember in crew %}
+            <p>{{ crewmember }} - Каюта № {{ loop.index }}{% if loop.first %} - капитан корабля {% endif %}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
