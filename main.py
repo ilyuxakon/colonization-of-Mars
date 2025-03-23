@@ -3,8 +3,10 @@ from flask import url_for, render_template, redirect
 from flask import request
 
 from flask_wtf import FlaskForm
+from flask_wtf.file import MultipleFileField, FileRequired
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
+from werkzeug.utils import secure_filename
 
 import os
 import json
@@ -22,6 +24,10 @@ class LoginForm(FlaskForm):
     captain_password = PasswordField('Пароль капитана', validators=[DataRequired()])
     submit = SubmitField('Доступ')
 
+  
+class GaleryForm(FlaskForm):
+    img = MultipleFileField('Выберите файл', validators=[FileRequired()])
+    submit = SubmitField('Отправить')
 
 @app.route('/<title>')
 @app.route('/index/<title>')
@@ -424,6 +430,20 @@ def table(sex, age):
             param['color'] = '#ff4500'
 
     return render_template('table.html', **param)
+
+
+@app.route('/galery', methods=["GET", "POST"])
+def galery():
+    form = GaleryForm()
+    if form.validate_on_submit():
+        for f in form.img.data:
+          filename = secure_filename(f.filename)
+          f.save(os.path.join(app.root_path, 'static\img\galery', filename))
+    
+    files = os.listdir('static/img/galery')
+    if len(files) == 0: files = False
+    print(files)
+    return render_template('galery.html', title='Галерея', files=files, form=form)
 
 
 if __name__ == '__main__':
