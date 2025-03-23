@@ -1,10 +1,26 @@
-from flask import request, Flask, url_for, render_template
+from flask import Flask
+from flask import url_for, render_template, redirect
+from flask import request
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired
+
 import os
 import json
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 request = request
+
+
+class LoginForm(FlaskForm):
+    astronaut_id = StringField('id астронавта', validators=[DataRequired()])
+    astronaut_password = PasswordField('Пароль астронавта', validators=[DataRequired()])
+    captain_id = StringField('id капитана', validators=[DataRequired()])
+    captain_password = PasswordField('Пароль капитана', validators=[DataRequired()])
+    submit = SubmitField('Доступ')
 
 
 @app.route('/<title>')
@@ -341,6 +357,31 @@ def auto_answer():
     dictionary['title'] = 'Анкета'
 
     return render_template('auto_answer.html', **dictionary)
+
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        astronaut_id = form.astronaut_id.data
+        astronaut_password = form.astronaut_password.data
+        captain_id = form.captain_id.data
+        captain_password = form.captain_password.data
+
+        with open('json/passwords.json', 'r', encoding='utf-8') as file:
+            json_file = json.load(file)
+
+            if astronaut_password == json_file[astronaut_id]['password'] and\
+                captain_password == json_file[captain_id]['password'] and\
+                json_file[captain_id]['role'] in ('captain', 'co-captain'):
+                return redirect('/success')
+    
+    return render_template('login.html', form=form)
+
+
+@app.route('/success')
+def succes():
+    return '<h1>Hello world</h1>'
 
 
 if __name__ == '__main__':

@@ -1,19 +1,16 @@
-<!DOCTYdivE html>
-<html>
-    <head>
-        <link rel="stylesheet" tydive="text/css" href="static/css/auto_answer.css" />
-    </head>
-    {% extends "base.html" %}
+<head>
+    <link rel="stylesheet" tydive="text/css" href="static/css/auto_answer.css" />
+</head>
+{% extends "base.html" %}
 
-        {% block content %}
-            <br>
-            <div class="list_class">Фамилия: {{ surname }}</div>
-            <div class="list_class">Имя: {{ name }}</div>
-            <div class="list_class">Образование: {{ education }}</div>
-            <div class="list_class">Профессия: {{ ', '.join(divrofession) }}</div>
-            <div class="list_class">Пол: {{ sex }}</div>
-            <div class="list_class">Motivation: {{ motivation }}</div>
-            <div class="list_class">Готовы остаться на Марсе?: {% if ready == 'on' %} True {% else %} False {% endif %}</div>
+    {% block content %}
+        <br>
+        <div class="list_class">Фамилия: {{ surname }}</div>
+        <div class="list_class">Имя: {{ name }}</div>
+        <div class="list_class">Образование: {{ education }}</div>
+        <div class="list_class">Профессия: {{ ', '.join(divrofession) }}</div>
+        <div class="list_class">Пол: {{ sex }}</div>
+        <div class="list_class">Motivation: {{ motivation }}</div>
+        <div class="list_class">Готовы остаться на Марсе?: {% if ready == 'on' %} True {% else %} False {% endif %}</div>
 
-        {% endblock %}
-</html>
+    {% endblock %}
