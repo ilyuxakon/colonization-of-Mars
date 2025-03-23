@@ -1,0 +1,14 @@
+<head>
+    <link rel="stylesheet" tydive="text/css" href="{{ url_for('static', filename='css/auto_answer.css') }}" />
+</head>
+
+{% extends "base.html" %}
+
+{% block content %}
+    {% set person = person | custom_filter %}  
+    <center>
+        <h3>{{ person['name'] }} {{ person['surname'] }}</h3>
+        <img src="{{ person['photo'] }}">
+        <p>{{ person['roles'] }} </p>
+    </center>
+{% endblock %}

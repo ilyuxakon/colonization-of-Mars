@@ -1,0 +1,8 @@
+{
+"1": {"password": "123", "roles": ["engineer"], "name": "Энди", "surname": "Уир", "photo": "static/img/members_photo/child_martian.jpg"},
+"2": {"password": "1234", "roles": ["co-captain"], "name": "Марк", "surname": "Уотни", "photo": "static/img/members_photo/child_martian.jpg"},
+"3": {"password": "12345", "roles": ["captain"], "name": "Ридли", "surname": "Скотт", "photo": "static/img/members_photo/child_martian.jpg"},
+"4": {"password": "123456", "roles": ["pilot"], "name": "Венката", "surname": "Капур", "photo": "static/img/members_photo/child_martian.jpg"},
+"5": {"password": "1234567", "roles": ["co-pilot", "engineer"], "name": "Тедди", "surname": "Сандерс", "photo": "static/img/members_photo/child_martian.jpg"},
+"6": {"password": "12345678", "roles": ["scientist"], "name": "Шон", "surname": "Бин", "photo": "static/img/members_photo/child_martian.jpg"}
+}

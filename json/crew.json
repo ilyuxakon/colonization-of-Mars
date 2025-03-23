@@ -1,8 +1,0 @@
-{
-"1": {"password": "123", "role": "engineer", "name": "Энди", "surname": "Уир"},
-"2": {"password": "1234", "role": "co-captain", "name": "Марк", "surname": "Уотни"},
-"3": {"password": "12345", "role": "captain", "name": "Ридли", "surname": "Скотт"},
-"4": {"password": "123456", "role": "pilot", "name": "Венката", "surname": "Капур"},
-"5": {"password": "1234567", "role": "co-pilot", "name": "Тедди", "surname": "Сандерс"},
-"6": {"password": "12345678", "role": "scientist", "name": "Шон", "surname": "Бин"}
-}

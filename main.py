@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 import os
 import json
+import random
 
 
 app = Flask(__name__)
@@ -185,7 +186,7 @@ def form_sample():
             if request.form.get(prof) == 'on':
                 dictionary['profession'].append(prof)
 
-        with open('json/person.json', 'w', encoding='utf-8') as file:
+        with open('templates/json/person.json', 'w', encoding='utf-8') as file:
             json.dump(dictionary, file)
 
         return "Форма отправлена"
@@ -358,7 +359,7 @@ def list_prof(list):
 @app.route('/answer')
 @app.route('/auto_answer')
 def auto_answer():
-    with open('json/person.json', 'r', encoding='utf-8') as file:
+    with open('templates/json/person.json', 'r', encoding='utf-8') as file:
         dictionary = json.load(file)
     dictionary['title'] = 'Анкета'
 
@@ -374,12 +375,13 @@ def login():
         captain_id = form.captain_id.data
         captain_password = form.captain_password.data
 
-        with open('json/crew.json', 'r', encoding='utf-8') as file:
+        with open('templates/json/crew.json', 'r', encoding='utf-8') as file:
             json_file = json.load(file)
 
             if astronaut_password == json_file[astronaut_id]['password'] and\
                 captain_password == json_file[captain_id]['password'] and\
-                json_file[captain_id]['role'] in ('captain', 'co-captain'):
+                ('captain' in json_file[captain_id]['roles'] or\
+                'co-captain' in json_file[captain_id]['roles']):
                 return redirect('/success')
     
     return render_template('login.html', form=form)
@@ -392,7 +394,7 @@ def succes():
 
 @app.route('/distribution')
 def distribution():
-    with open('json/crew.json', 'r', encoding='utf-8') as file:
+    with open('templates/json/crew.json', 'r', encoding='utf-8') as file:
         json_file = json.load(file)
 
         crew = list()
@@ -400,7 +402,7 @@ def distribution():
             name = crewmember['name'] + ' ' + crewmember['surname']
             crew.append(name)
 
-            if crewmember['role'] == 'captain':
+            if 'captain' in crewmember['roles']:
                 crew.insert(0, name)
                 crew.pop()
 
@@ -442,9 +444,24 @@ def galery():
     
     files = os.listdir('static/img/galery')
     if len(files) == 0: files = False
-    print(files)
     return render_template('galery.html', title='Галерея', files=files, form=form)
 
+
+@app.route('/member')
+def member():
+    with open('templates/json/crew.json', 'r', encoding='utf-8') as file:
+      person = json.load(file)
+      return render_template('member.html', title='Член экипажа', person=person)
+
+
+def custom_filter(crew):
+    person = random.choice(list (crew.values()))
+    param = dict()
+    param['name'], param['surname'], param['photo'] = person['name'], person['surname'], person['photo']
+    param['roles'] = ', '.join(sorted(person['roles']))
+    return param
+
+app.jinja_env.filters['custom_filter'] = custom_filter
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
