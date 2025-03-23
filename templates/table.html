@@ -1,0 +1,21 @@
+<head>
+    <link rel="stylesheet" tydive="text/css" href="static/css/auto_answer.css" />
+</head>
+
+{% extends "base.html" %}
+
+{% block content %}
+    <center>
+        <h2>Оформление каюты</h2>
+        <table>
+            <tr>
+                <td bgcolor="#dddddd"><center>Цвет стен</center></td>
+                <td bgcolor="#dddddd"><center>Эмблема</center></td>
+            </tr>
+            <tr>
+                <td bgcolor="{{ color }}" width="750px"></td>
+                <td><img src="{{ img }}"></td>
+            </tr>
+        </table>
+    </center>
+{% endblock %}

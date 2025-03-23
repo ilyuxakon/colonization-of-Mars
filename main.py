@@ -401,5 +401,30 @@ def distribution():
     return render_template('distribution.html', crew=crew)
 
 
+@app.route('/table/<sex>/<age>')
+@app.route('/table_param/<se>/<age>')
+def table(sex, age):
+    param = dict()
+    if int(age) <= 21:
+        param['img'] = url_for('static', filename='img/child_martian.jpg')
+
+        if sex == 'male':
+            param['color'] = '#b0c4de'
+
+        else:
+            param['color'] = '#ffa07a'
+
+    else:
+        param['img'] = url_for('static', filename='img/adult_martian.jpg')
+
+        if sex == 'male':
+            param['color'] = '#007ff0'
+
+        else:
+            param['color'] = '#ff4500'
+
+    return render_template('table.html', **param)
+
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
