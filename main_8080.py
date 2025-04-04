@@ -12,18 +12,6 @@ import os
 import json
 import random
 
-from data import db_session
-from data import jobs
-
-db_session.global_init('db/mars.db')
-session = db_session.create_session()
-job = jobs.Jobs()
-job.team_leader = 1
-job.job = 'deployment of residential modules 1 and 2'
-job.work_size = 15
-job.collaborators = '2, 3'
-job.is_finished = False
-session.add(job)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -41,6 +29,7 @@ class LoginForm(FlaskForm):
 class GaleryForm(FlaskForm):
     img = MultipleFileField('Выберите файл', validators=[FileRequired()])
     submit = SubmitField('Отправить')
+
 
 @app.route('/<title>')
 @app.route('/index/<title>')
