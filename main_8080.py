@@ -34,7 +34,7 @@ class GaleryForm(FlaskForm):
 @app.route('/<title>')
 @app.route('/index/<title>')
 def index(title):
-    return render_template('base.html', title=title)
+    return render_template('base_8080.html', title=title)
 
 
 @app.route('/promotion')
@@ -354,7 +354,7 @@ def list_prof(list):
         "штурман", 
         "пилот дронов"
         ]
-    return render_template('list_prof.html', list=list, list_professions=list_professions, title='list of professions')
+    return render_template('list_prof_8080.html', list=list, list_professions=list_professions, title='list of professions')
 
 
 @app.route('/answer')
@@ -364,7 +364,7 @@ def auto_answer():
         dictionary = json.load(file)
     dictionary['title'] = 'Анкета'
 
-    return render_template('auto_answer.html', **dictionary)
+    return render_template('auto_answer_8080.html', **dictionary)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -385,7 +385,7 @@ def login():
                 'co-captain' in json_file[captain_id]['roles']):
                 return redirect('/success')
     
-    return render_template('login.html', form=form)
+    return render_template('login_8080.html', form=form)
 
 
 @app.route('/success')
@@ -407,7 +407,7 @@ def distribution():
                 crew.insert(0, name)
                 crew.pop()
 
-    return render_template('distribution.html', crew=crew)
+    return render_template('distribution_8080.html', crew=crew)
 
 
 @app.route('/table/<sex>/<age>')
@@ -432,7 +432,7 @@ def table(sex, age):
         else:
             param['color'] = '#ff4500'
 
-    return render_template('table.html', **param)
+    return render_template('table_8080.html', **param)
 
 
 @app.route('/galery', methods=["GET", "POST"])
@@ -445,14 +445,14 @@ def galery():
     
     files = os.listdir('static/img/galery')
     if len(files) == 0: files = False
-    return render_template('galery.html', title='Галерея', files=files, form=form)
+    return render_template('galery_8080.html', title='Галерея', files=files, form=form)
 
 
 @app.route('/member')
 def member():
     with open('templates/json/crew.json', 'r', encoding='utf-8') as file:
       person = json.load(file)
-      return render_template('member.html', title='Член экипажа', person=person)
+      return render_template('member_8080.html', title='Член экипажа', person=person)
 
 
 def custom_filter(crew):
