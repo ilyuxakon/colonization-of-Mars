@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, EmailField, IntegerField, BooleanField
 from wtforms.validators import DataRequired
 
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required
 
 from data import db_session, __all_models
 
@@ -39,6 +39,15 @@ class LoginForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me?')
+    submit = SubmitField('Submit')
+
+
+class AddJob(FlaskForm):
+    job = StringField('Job Title', validators=[DataRequired()])
+    team_leader = IntegerField('Team Leader id', validators=[DataRequired()])
+    work_size = IntegerField('Work Size', validators=[DataRequired()])
+    collaborators = StringField('Collaborators', validators=[DataRequired()])
+    is_finished = BooleanField('Is job finished?')
     submit = SubmitField('Submit')
 
 
@@ -86,7 +95,8 @@ def register():
         session.add(user)
         session.commit()
 
-        return redirect('/success')        
+        login_user(user, remember=False)
+        return redirect('/')       
     
     return render_template('register_5000.html', title='Регистрация', form=form)
 
@@ -105,6 +115,36 @@ def login():
         return render_template('login_5000.html', title='Логин', form=form, message='Неправильный логин или пароль')
     
     return render_template('login_5000.html', title='Логин', form=form)
+
+
+@app.route('/addjob', methods=['POST', 'GET'])
+@login_required
+def addjob():
+    form = AddJob()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+
+        if session.query(Jobs).filter(Jobs.job == form.job.data,
+                                      Jobs.team_leader == form.team_leader.data,
+                                      Jobs.work_size == form.work_size.data,
+                                      Jobs.collaborators == form.collaborators.data,
+                                      Jobs.is_finished == form.is_finished.data).first():
+            return render_template('addjob_5000.html', title='Adding a job', form=form, message='Эта работа уже существует')
+        
+        job = Jobs(
+            job = form.job.data,
+            team_leader = form.team_leader.data,
+            work_size = form.work_size.data,
+            collaborators = form.collaborators.data,
+            is_finished = form.is_finished.data
+        )
+
+        session.add(job)
+        session.commit()
+
+        return render_template('addjob_5000.html', title='Adding a job', form=form, message='Работа добавлена')
+    
+    return render_template('addjob_5000.html', title='Adding a job', form=form)
 
 
 if __name__ == '__main__':

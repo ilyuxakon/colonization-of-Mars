@@ -1,12 +1,10 @@
 <head>
-    <link rel="stylesheet" tydive="text/css" href="{{ url_for('static', filename='css/login_8080.css') }}" />
+    <link rel="stylesheet" tydive="text/css" href="{{ url_for('static', filename='css/form.css') }}" />
 </head>
 
 {% extends "base.html" %}
 
 {% block content %}
-<div class="login_class">
-    <br>
     <h1><img src="{{ url_for('static', filename='img/MARS-2-7.png') }}" >Аварийный доступ</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
@@ -48,5 +46,4 @@
         </p>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     </form>
-</div>
 {% endblock %}
