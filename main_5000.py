@@ -64,9 +64,9 @@ def work_log():
 
     data = list()
     for job in session.query(Jobs).all():
-        data.append({'id': job.id, 'job': job.job, 'leader': job.team_leader, 'duration': job.work_size, 'collaborators': job.collaborators, 'is_finished': 'if finished' if job.is_finished else 'is not finished'})
-
-    return buffer('work_log_5000.html', data=data)
+        data.append({'id': job.id, 'job': job.job, 'leader': job.team_leader, 'leader_name': f'{job.team_lead.name} {job.team_lead.surname}', 'duration': job.work_size, 'collaborators': job.collaborators, 'is_finished': 'if finished' if job.is_finished else 'is not finished'})
+    
+    return buffer('work_log_5000.html', data=data, current_user_id=current_user.id)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -146,6 +146,50 @@ def addjob():
         return buffer('addjob_5000.html', title='Adding a job', form=form, message='Работа добавлена')
     
     return buffer('addjob_5000.html', title='Adding a job', form=form)
+
+
+@app.route('/editjob/<job_id>', methods=['POST', 'GET'])
+@login_required
+def editjob(job_id):
+    session = db_session.create_session()
+    job = session.query(Jobs).filter(Jobs.id == job_id).first()
+
+    if current_user.id != 1 and current_user.id != job.team_leader:
+        return redirect('/')
+
+    form = AddJob()
+
+    if form.validate_on_submit():
+        job.job = form.job.data
+        job.team_leader = form.team_leader.data
+        job.work_size = form.work_size.data
+        job.collaborators = form.collaborators.data
+        job.is_finished = form.is_finished.data
+
+        session.commit()
+        return buffer('addjob_5000.html', title='Edit a job', form=form, message='Работа отредактирована')
+
+    else:
+        form.job.data = job.job
+        form.team_leader.data = job.team_leader
+        form.work_size.data = job.work_size
+        form.collaborators.data = job.collaborators
+        form.is_finished.data = job.is_finished
+
+    return buffer('addjob_5000.html', title='Edit a job', form=form)
+
+
+@app.route('/deletejob/<job_id>')
+@login_required
+def deletejob(job_id):
+    session = db_session.create_session()
+    job = session.query(Jobs).filter(Jobs.id == job_id).first()
+
+    if current_user.id == 1 or current_user.id == job.team_leader:
+        session.delete(job)
+        session.commit()
+
+    return redirect('/')
 
 
 @app.route('/logout')

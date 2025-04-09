@@ -21,11 +21,15 @@
                 </tr>
                 <tr>
                     <td>{{ dict['job'] }}</td>
-                    <td>{{ dict['leader'] }}</td>
+                    <td>{{ dict['leader_name'] }}</td>
                     <td>{{ dict['duration'] }}</td>
                     <td>{{ dict['collaborators'] }}</td>
                     <td>{{ dict['is_finished'] }}</td>
                 </tr>
+                {% if current_user_id == 1 or current_user_id == dict['leader'] %}
+                    <tr><td><br></td></tr>
+                    <tr><td><a class="btn btn-warning" href="/editjob/{{ dict['id'] }}">Edit job</a><a class="btn btn-danger", href="/deletejob/{{ dict['id'] }}">Delete job</a></td></tr>
+                {% endif %}
             {% endfor %}
         </table>
 
