@@ -27,6 +27,7 @@
             {% endfor %}
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label() }}</p>
+        <a class="btn btn-success button", href="/register">Register</a>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         {{ message }}
     </form>

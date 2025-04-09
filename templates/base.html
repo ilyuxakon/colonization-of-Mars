@@ -11,8 +11,11 @@
     </head>
     <body>
         <h1>Миссия Колонизация Марса</h1>
-        <div class="current_user">{{ username }}</div>
+        {% if username %}
+            <a class="current_user btn btn-secondary" href="/logout">{{ username }}</a>
+        {% endif %}
         <h4>И на Марсе будут яблони цвести</h4>
+        <br>
         {% block content%}{% endblock %}
     </body>
 </html>

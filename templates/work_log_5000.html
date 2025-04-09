@@ -1,28 +1,36 @@
+<head>
+    <link rel="stylesheet" tydive="text/css" href="{{ url_for('static', filename='css/work_log_5000.css') }}" />
+</head>
+
 {% extends "base.html" %}
 
 {% block content %}
-    <center>
+    <div class="container">
         <table>
-            <tr><h1>Works log</h1></tr>
+            <tr><td colspan="5"><center><h1>Works log</h1></center></td></tr>
 
             {% for dict in data %}
-            <tr><td><br></td></tr>
-            <tr><th>Action # {{ dict['id'] }}</th></tr>
-            <tr class="list">
-                <td>Title of activity</td>
-                <td>Team leader</td>
-                <td>Duration</td>
-                <td>List of collaborators</td>
-                <td>Is finished</td>
-            </tr>
-            <tr>
-                <td>{{ dict['job'] }}</td>
-                <td>{{ dict['leader'] }}</td>
-                <td>{{ dict['duration'] }}</td>
-                <td>{{ dict['collaborators'] }}</td>
-                <td>{{ dict['is_finished'] }}</td>
-            </tr>
+                <tr><td><br></td></tr>
+                <tr><th>Action # {{ dict['id'] }}</th></tr>
+                <tr class="list">
+                    <td>Title of activity</td>
+                    <td>Team leader</td>
+                    <td>Duration</td>
+                    <td>List of collaborators</td>
+                    <td>Is finished</td>
+                </tr>
+                <tr>
+                    <td>{{ dict['job'] }}</td>
+                    <td>{{ dict['leader'] }}</td>
+                    <td>{{ dict['duration'] }}</td>
+                    <td>{{ dict['collaborators'] }}</td>
+                    <td>{{ dict['is_finished'] }}</td>
+                </tr>
             {% endfor %}
         </table>
-    </center>
+
+        <div>
+            <a class="btn btn-success", href="/addjob">Add job</a>
+        </div>
+    </div>
 {% endblock %}

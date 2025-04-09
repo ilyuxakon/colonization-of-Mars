@@ -2,3 +2,7 @@ form {
     max-width: 70%;
     margin-left: 15%;
 }
+
+.button {
+    float: right
+}

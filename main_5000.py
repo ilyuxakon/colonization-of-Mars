@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, EmailField, IntegerField, BooleanField
 from wtforms.validators import DataRequired
 
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session, __all_models
 
@@ -39,7 +39,7 @@ class LoginForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me?')
-    submit = SubmitField('Submit')
+    submit = SubmitField('Sign in')
 
 
 class AddJob(FlaskForm):
@@ -58,6 +58,7 @@ def load_user(user_id):
 
 
 @app.route('/')
+@login_required
 def work_log():
     session = db_session.create_session()
 
@@ -65,7 +66,7 @@ def work_log():
     for job in session.query(Jobs).all():
         data.append({'id': job.id, 'job': job.job, 'leader': job.team_leader, 'duration': job.work_size, 'collaborators': job.collaborators, 'is_finished': 'if finished' if job.is_finished else 'is not finished'})
 
-    return render_template('work_log_5000.html', data=data)
+    return buffer('work_log_5000.html', data=data)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -111,7 +112,7 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
-        
+  
         return render_template('login_5000.html', title='Логин', form=form, message='Неправильный логин или пароль')
     
     return render_template('login_5000.html', title='Логин', form=form)
@@ -129,7 +130,7 @@ def addjob():
                                       Jobs.work_size == form.work_size.data,
                                       Jobs.collaborators == form.collaborators.data,
                                       Jobs.is_finished == form.is_finished.data).first():
-            return render_template('addjob_5000.html', title='Adding a job', form=form, message='Эта работа уже существует')
+            return buffer('addjob_5000.html', title='Adding a job', form=form, message='Эта работа уже существует')
         
         job = Jobs(
             job = form.job.data,
@@ -142,10 +143,20 @@ def addjob():
         session.add(job)
         session.commit()
 
-        return render_template('addjob_5000.html', title='Adding a job', form=form, message='Работа добавлена')
+        return buffer('addjob_5000.html', title='Adding a job', form=form, message='Работа добавлена')
     
-    return render_template('addjob_5000.html', title='Adding a job', form=form)
+    return buffer('addjob_5000.html', title='Adding a job', form=form)
 
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/login")
+
+
+def buffer(*arg, **args):
+    return render_template(*arg, **args, username=f'{current_user.name} {current_user.surname}' if current_user.is_authenticated else 'Вы неавторизованны')
 
 if __name__ == '__main__':
     app.run(port=5000, host='127.0.0.1')
