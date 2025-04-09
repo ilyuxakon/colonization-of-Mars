@@ -1,0 +1,17 @@
+.list {
+    background-color: rgb(185, 185, 185);
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.button_container {
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
+}

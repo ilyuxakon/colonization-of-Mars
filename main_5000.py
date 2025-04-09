@@ -18,7 +18,7 @@ request = request
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-User, Jobs = __all_models.users.User, __all_models.jobs.Jobs
+User, Jobs, Department = __all_models.users.User, __all_models.jobs.Jobs, __all_models.departments.Department
 db_session.global_init('db/mars.db')
 
 
@@ -48,6 +48,14 @@ class AddJob(FlaskForm):
     work_size = IntegerField('Work Size', validators=[DataRequired()])
     collaborators = StringField('Collaborators', validators=[DataRequired()])
     is_finished = BooleanField('Is job finished?')
+    submit = SubmitField('Submit')
+
+
+class AddDepartment(FlaskForm):
+    title = StringField('Department Title', validators=[DataRequired()])
+    chief = IntegerField('Chief', validators=[DataRequired()])
+    members = StringField('Members', validators=[DataRequired()])
+    email = EmailField('Department Email', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
@@ -197,6 +205,88 @@ def deletejob(job_id):
 def logout():
     logout_user()
     return redirect("/login")
+
+
+@app.route('/department')
+@login_required
+def department():
+    session = db_session.create_session()
+
+    data = list()
+    for department in session.query(Department).all():
+        data.append({'id': department.id, 'title': department.title, 'chief': department.chief, 'chief_name': f'{department.chief_u.name} {department.chief_u.surname}', 'members': department.members, 'email': department.email})
+    
+    return buffer('department_log_5000.html', data=data, current_user_id=current_user.id)
+
+
+@app.route('/adddepartment', methods=['POST', 'GET'])
+@login_required
+def adddepartment():
+    form = AddDepartment()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+
+        if session.query(Department).filter(Department.title == form.title.data,
+                                      Department.chief == form.chief.data,
+                                      Department.members == form.members.data,
+                                      Department.email == form.email.data).first():
+            return buffer('adddepartment_5000.html', title='Adding a department', form=form, message='Этот Департамент уже существует')
+        
+        department = Department(
+            title = form.title.data,
+            chief = form.chief.data,
+            members = form.members.data,
+            email = form.email.data,
+        )
+
+        session.add(department)
+        session.commit()
+
+        return buffer('adddepartment_5000.html', title='Adding a department', form=form, message='Департамент добавлен')
+    
+    return buffer('adddepartment_5000.html', title='Adding a department', form=form)
+
+
+@app.route('/editdepartment/<department_id>', methods=['POST', 'GET'])
+@login_required
+def editdepartment(department_id):
+    session = db_session.create_session()
+    department = session.query(Department).filter(Department.id == department_id).first()
+
+    if current_user.id != 1 and current_user.id != department.chief:
+        return redirect('/')
+
+    form = AddDepartment()
+
+    if form.validate_on_submit():
+        department.title = form.title.data
+        department.chief = form.chief.data
+        department.members = form.members.data
+        department.email = form.email.data
+
+        session.commit()
+        return buffer('adddepartment_5000.html', title='Edit a department', form=form, message='Департамент отредактирован')
+
+    else:
+        form.title.data = department.title
+        form.chief.data = department.chief
+        form.members.data = department.members
+        form.email.data = department.email
+
+    return buffer('adddepartment_5000.html', title='Edit a department', form=form)
+
+
+@app.route('/deletedepartment/<department_id>')
+@login_required
+def deletedepartment(department_id):
+    session = db_session.create_session()
+    department = session.query(Department).filter(Department.id == department_id).first()
+
+    if current_user.id == 1 or current_user.id == department.chief:
+        session.delete(department)
+        session.commit()
+
+    return redirect('/department')
 
 
 def buffer(*arg, **args):

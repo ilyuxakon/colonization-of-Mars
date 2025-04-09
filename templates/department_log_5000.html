@@ -1,0 +1,39 @@
+<head>
+    <link rel="stylesheet" tydive="text/css" href="{{ url_for('static', filename='css/log_5000.css') }}" />
+</head>
+
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <table>
+            <tr><td colspan="5"><center><h1>List if Departments</h1></center></td></tr>
+
+            {% for dict in data %}
+                <tr><td><br></td></tr>
+                <tr><th>Department # {{ dict['id'] }}</th></tr>
+                <tr class="list">
+                    <td>Title of department</td>
+                    <td>Chief</td>
+                    <td>Members</td>
+                    <td>Department Email</td>
+                </tr>
+                <tr>
+                    <td>{{ dict['title'] }}</td>
+                    <td>{{ dict['chief_name'] }}</td>
+                    <td>{{ dict['members'] }}</td>
+                    <td>{{ dict['email'] }}</td>
+                </tr>
+                {% if current_user_id == 1 or current_user_id == dict['chief'] %}
+                    <tr><td><br></td></tr>
+                    <tr><td><a class="btn btn-warning" href="/editdepartment/{{ dict['id'] }}">Edit department</a><a class="btn btn-danger", href="/deletedepartment/{{ dict['id'] }}">Delete department</a></td></tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+
+        <div class="button_container">
+            <a class="btn btn-success", href="/adddepartment">Add department</a>
+            <a class="btn btn-dark", href="/">Job</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,5 +1,5 @@
 <head>
-    <link rel="stylesheet" tydive="text/css" href="{{ url_for('static', filename='css/work_log_5000.css') }}" />
+    <link rel="stylesheet" tydive="text/css" href="{{ url_for('static', filename='css/log_5000.css') }}" />
 </head>
 
 {% extends "base.html" %}
@@ -33,8 +33,9 @@
             {% endfor %}
         </table>
 
-        <div>
+        <div class="button_container">
             <a class="btn btn-success", href="/addjob">Add job</a>
+            <a class="btn btn-dark", href="/department">Department</a>
         </div>
     </div>
 {% endblock %}
