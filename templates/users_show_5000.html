@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <center>
+        <h2>Nostalgy</h2>
+        <h3>{{ data['name'] }} {{ data['surname'] }}</h3>
+        <h5>{{ data['city_name'] }}</h5>
+        <img src="{{ data['img'] }}"><br>
+        <a class="btn btn-dark", href="/">Back</a>
+    </center>
+{% endblock %}

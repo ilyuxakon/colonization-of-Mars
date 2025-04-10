@@ -1,6 +1,5 @@
 from flask import Flask
-from flask import render_template, redirect
-from flask import request
+from flask import render_template, redirect, abort, make_response, jsonify
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, EmailField, IntegerField, BooleanField
@@ -8,12 +7,17 @@ from wtforms.validators import DataRequired
 
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
+from requests import get
+
 from data import db_session, __all_models
+import jobs_api
+import users_api
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-request = request
+app.register_blueprint(jobs_api.blueprint)
+app.register_blueprint(users_api.blueprint)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -156,12 +160,15 @@ def addjob():
     return buffer('addjob_5000.html', title='Adding a job', form=form)
 
 
-@app.route('/editjob/<job_id>', methods=['POST', 'GET'])
+@app.route('/editjob/<int:job_id>', methods=['POST', 'GET'])
 @login_required
 def editjob(job_id):
     session = db_session.create_session()
     job = session.query(Jobs).filter(Jobs.id == job_id).first()
 
+    if not job:
+        abort(404)
+    
     if current_user.id != 1 and current_user.id != job.team_leader:
         return redirect('/')
 
@@ -187,11 +194,14 @@ def editjob(job_id):
     return buffer('addjob_5000.html', title='Edit a job', form=form)
 
 
-@app.route('/deletejob/<job_id>')
+@app.route('/deletejob/<int:job_id>')
 @login_required
 def deletejob(job_id):
     session = db_session.create_session()
     job = session.query(Jobs).filter(Jobs.id == job_id).first()
+
+    if not job:
+        abort(404)
 
     if current_user.id == 1 or current_user.id == job.team_leader:
         session.delete(job)
@@ -247,11 +257,14 @@ def adddepartment():
     return buffer('adddepartment_5000.html', title='Adding a department', form=form)
 
 
-@app.route('/editdepartment/<department_id>', methods=['POST', 'GET'])
+@app.route('/editdepartment/<int:department_id>', methods=['POST', 'GET'])
 @login_required
 def editdepartment(department_id):
     session = db_session.create_session()
     department = session.query(Department).filter(Department.id == department_id).first()
+
+    if not department:
+        abort(404)
 
     if current_user.id != 1 and current_user.id != department.chief:
         return redirect('/')
@@ -276,11 +289,14 @@ def editdepartment(department_id):
     return buffer('adddepartment_5000.html', title='Edit a department', form=form)
 
 
-@app.route('/deletedepartment/<department_id>')
+@app.route('/deletedepartment/<int:department_id>')
 @login_required
 def deletedepartment(department_id):
     session = db_session.create_session()
     department = session.query(Department).filter(Department.id == department_id).first()
+
+    if not department:
+        abort(404)
 
     if current_user.id == 1 or current_user.id == department.chief:
         session.delete(department)
@@ -289,8 +305,71 @@ def deletedepartment(department_id):
     return redirect('/department')
 
 
+@app.route('/users_show/<int:user_id>')
+@login_required
+def users_show(user_id):
+    user = get(f'http://127.0.0.1:5000/api/users/{user_id}')
+    
+    if not user.ok:
+        abort(404)
+
+    user = user.json()
+
+    geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
+    
+    geocoder_params = {
+        "apikey": "8013b162-6b42-4997-9691-77b7074026e0",
+        "geocode": user['user']['city_from'],
+        "format": "json"}
+
+    response = get(geocoder_api_server, params=geocoder_params)
+
+    json_response = response.json()
+    # Получаем первый топоним из ответа геокодера.
+    toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+    lowerCorner, upperCorner = toponym['boundedBy']['Envelope']['lowerCorner'], toponym['boundedBy']['Envelope']['upperCorner']
+
+    apikey = "f3a0fe3a-b07e-4840-a1da-06f18b2ddf13"
+    # Собираем параметры для запроса к StaticMapsAPI:
+    map_params = {
+        "bbox": f'{','.join(lowerCorner.split())}~{','.join(upperCorner.split())}',
+        "apikey": apikey,
+        "maptype": 'map'
+
+    }
+
+    map_api_server = "https://static-maps.yandex.ru/v1"
+    # ... и выполняем запрос
+    response = get(map_api_server, params=map_params)
+
+    data = {
+        'name': user['user']['name'],
+        'surname': user['user']['surname'],
+        'city_name': user['user']['city_from'],
+        'img': response.url
+    }
+
+    return buffer('users_show_5000.html', data=data, current_user_id=current_user.id)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+
+@app.errorhandler(500)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Eternal server error'}), 500)
+
+
 def buffer(*arg, **args):
     return render_template(*arg, **args, username=f'{current_user.name} {current_user.surname}' if current_user.is_authenticated else 'Вы неавторизованны')
+
 
 if __name__ == '__main__':
     app.run(port=5000, host='127.0.0.1')
