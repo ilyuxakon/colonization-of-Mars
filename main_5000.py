@@ -15,7 +15,7 @@ from data import db_session, __all_models
 import jobs_api
 import users_api
 import users_resource
-
+import jobs_resource
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -25,6 +25,8 @@ app.register_blueprint(users_api.blueprint)
 api = Api(app)
 api.add_resource(users_resource.UsersListResource, '/api/v2/users')
 api.add_resource(users_resource.UsersResource, '/api/v2/users/<int:user_id>')
+api.add_resource(jobs_resource.JobsListResource, '/api/v2/jobs')
+api.add_resource(jobs_resource.JobsResource, '/api/v2/jobs/<int:job_id>')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
