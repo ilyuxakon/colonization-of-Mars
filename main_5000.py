@@ -85,7 +85,7 @@ def work_log():
 
     data = list()
     for job in session.query(Jobs).all():
-        data.append({'id': job.id, 'job': job.job, 'leader': job.team_leader, 'leader_name': f'{job.team_lead.name} {job.team_lead.surname}', 'duration': job.work_size, 'collaborators': job.collaborators, 'is_finished': 'if finished' if job.is_finished else 'is not finished'})
+        data.append({'id': job.id, 'job': job.job, 'leader': job.team_leader, 'leader_name': f'{job.team_lead.name} {job.team_lead.surname}', 'duration': job.work_size, 'collaborators': job.collaborators, 'category':', '.join([category.name for category in job.categories]) ,'is_finished': 'if finished' if job.is_finished else 'is not finished'})
     
     return buffer('work_log_5000.html', data=data, current_user_id=current_user.id)
 

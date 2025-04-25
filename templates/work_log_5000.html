@@ -17,6 +17,7 @@
                     <td>Team leader</td>
                     <td>Duration</td>
                     <td>List of collaborators</td>
+                    <td>Hazard category</td>
                     <td>Is finished</td>
                 </tr>
                 <tr>
@@ -24,6 +25,7 @@
                     <td>{{ dict['leader_name'] }}</td>
                     <td>{{ dict['duration'] }}</td>
                     <td>{{ dict['collaborators'] }}</td>
+                    <td>{{ dict['category']}}</td>
                     <td>{{ dict['is_finished'] }}</td>
                 </tr>
                 {% if current_user_id == 1 or current_user_id == dict['leader'] %}
