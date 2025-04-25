@@ -411,7 +411,7 @@ def distribution():
 
 
 @app.route('/table/<sex>/<age>')
-@app.route('/table_param/<se>/<age>')
+@app.route('/table_param/<sex>/<age>')
 def table(sex, age):
     param = dict()
     if int(age) <= 21:
@@ -455,6 +455,15 @@ def member():
       return render_template('member_8080.html', title='Член экипажа', person=person)
 
 
+@app.route('/training/<prof>')
+def training(prof):
+    if 'инженер' in prof.lower() or 'строитель' in prof.lower():
+        prof = 1
+        
+    else: prof = 0
+    
+    return render_template('training_8080.html', prof=prof)  
+  
 def custom_filter(crew):
     person = random.choice(list (crew.values()))
     param = dict()
